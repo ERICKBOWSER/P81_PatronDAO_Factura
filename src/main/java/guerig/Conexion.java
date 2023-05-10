@@ -17,8 +17,8 @@ public class Conexion {
 
     private static final String SERVIDOR = "jdbc:mysql://192.168.56.101/";
     private static final String NOMBRE_BASE_DATOS = "p81_GuerigEri";
-    private static final String USER = "root";
-    private static final String PASS = "usuario.1234";
+    private static final String USER = "eri";
+    private static final String PASS = "ge.CJ#28";
 
     private static Connection instancia = null;
     

@@ -6,6 +6,7 @@ package guerig;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,14 @@ public class Main {
             System.out.println(factura);
         }
         
+        // Insertar lista de facturas en la bbdd
+        fdao.insertFactura(listaFactura);
+        
+        // Insertar cada una de las facturas
+//        for (Factura factura : listaFactura) {
+//            fdao.insertFactura(factura);
+//        }
+        
         // Obtener todas las facturas
         List<Factura> listaDAO = new ArrayList();
         listaDAO = fdao.getAll();
@@ -44,10 +53,23 @@ public class Main {
         System.out.println("\nFactura obtenida por su PK:");
         System.out.println(facturaPK);
         
-        Factura factInsert = new Factura(100, LocalDate.now(), "prueba", 58);
-        
+        // Insertar nueva factura
+        Factura factInsert = new Factura(100, LocalDate.of(2020, Month.MARCH, 18), "prueba", 58);
+                
         fdao.insertFactura(factInsert);
         
+        System.out.println("Nueva factura insertada: ");
+        System.out.println(factInsert);
+        
+        
+        // Eliminar todas las facturas
+        fdao.deleteFactura();
+        
+        // Eliminar una factura determinada
+        fdao.deleteFactura(listaFactura.get(49));
+        
+        Factura factUpdate = new Factura(1, LocalDate.of(2023, Month.APRIL, 15), "actualizado", 100);
+
         
     }
 }

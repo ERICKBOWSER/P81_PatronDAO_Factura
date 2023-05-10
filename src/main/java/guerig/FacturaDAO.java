@@ -5,6 +5,7 @@
 package guerig;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,7 +13,6 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -46,7 +46,7 @@ public class FacturaDAO implements IFactura{
                 f.setDescripcion(res.getString("descripcion"));
                 
                 // Parseamos los datos para obtener la fecha
-                DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy/MM/dd"); // Formato para la fecha
+                DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Formato para la fecha
                 LocalDate fecha = LocalDate.parse(res.getString("fechaEmision"), formato);
                 f.setFechaEmision(fecha);         
                 
@@ -67,7 +67,7 @@ public class FacturaDAO implements IFactura{
         ResultSet res = null;
         Factura fact = new Factura();
         
-        String sql = "SELECT * FROM p81_GuerigEri WHERE codigo = ?";
+        String sql = "SELECT * FROM factura WHERE codigo = ?";
         
         try(PreparedStatement prest = connect.prepareStatement(sql)){
             // Preparar sentencía parametrizada
@@ -96,7 +96,7 @@ public class FacturaDAO implements IFactura{
         int numFilas = 0;
         
         // Sentencia sql
-        String sql = "INSERT INTO p81_GuerigEri VALUES (?,?,?,?)";
+        String sql = "INSERT INTO factura VALUES (?,?,?,?)";
 
         if(findByPk(f.getCodigo()) != null){
             
@@ -106,7 +106,7 @@ public class FacturaDAO implements IFactura{
             
             try(PreparedStatement prest = connect.prepareStatement(sql)){
                 prest.setInt(1, f.getCodigo());
-                prest.setDate(2, Date.valueOf(f.getFechaEmision()));
+                prest.setDate(2, Date.valueOf(f.getFechaEmision())); // Hay que importar "import java.sql.Date"
                 prest.setString(3, f.getDescripcion());
                 prest.setDouble(4, f.getTotalImporteFactura());
                 
@@ -124,7 +124,7 @@ public class FacturaDAO implements IFactura{
         
         for (Factura factura : lista) {
             // Aumenta contador por cada llamada al propio método            
-            numFilas += insertFactura(factura);
+            numFilas += insertFactura(factura); // Llamada al otro método de insertFactura
         }
         return numFilas;
     }
@@ -132,7 +132,7 @@ public class FacturaDAO implements IFactura{
     // Eliminar todas las facturas
     @Override
     public int deleteFactura() throws SQLException {
-        String sql =  "DELETE FROM p81_GuerigEri";
+        String sql =  "DELETE FROM factura";
         
         int nFilas = 0;
         
@@ -148,7 +148,7 @@ public class FacturaDAO implements IFactura{
     public int deleteFactura(Factura f) throws SQLException {
         int numFilas = 0;
         
-        String sql = "DELETE FROM p81_GuerigEri WHERE codigo = ?";
+        String sql = "DELETE FROM factura WHERE codigo = ?";
         
         try(PreparedStatement prest = connect.prepareStatement(sql)){
             prest.setInt(1, f.getCodigo()); // Obtenemos el código para realizar la eliminación
@@ -162,7 +162,7 @@ public class FacturaDAO implements IFactura{
     @Override
     public int updateFactura(int pk, Factura nuevosDatos) throws SQLException {
         int numFilas = 0;
-        String sql = "UPDATE p81_GuerigEri SET codigo = ?, fechaEmision = ?, descripcion = ?, totalImporteFactura = ? WHERE codigo = ?";
+        String sql = "UPDATE factura SET codigo = ?, fechaEmision = ?, descripcion = ?, totalImporteFactura = ? WHERE codigo = ?";
         
         if(findByPk(pk) == null){
             return numFilas;
@@ -172,7 +172,13 @@ public class FacturaDAO implements IFactura{
                 prest.setDate(2, Date.valueOf(nuevosDatos.getFechaEmision()));
                 prest.setString(3, nuevosDatos.getDescripcion());
                 prest.setDouble(4, nuevosDatos.getTotalImporteFactura());
+                
+                // Hay que colocar el codigo del WHERE si no no funciona
+                prest.setInt(5, nuevosDatos.getCodigo());
+                
+                numFilas = prest.executeUpdate();
             }
+            return numFilas;
         }
     }
     

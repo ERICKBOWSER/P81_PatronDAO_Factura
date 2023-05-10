@@ -63,12 +63,13 @@ public class Main {
         
         
         // Eliminar todas las facturas
-        fdao.deleteFactura();
+//        fdao.deleteFactura();
         
         // Eliminar una factura determinada
         fdao.deleteFactura(listaFactura.get(49));
         
-        Factura factUpdate = new Factura(1, LocalDate.of(2023, Month.APRIL, 15), "actualizado", 100);
+        Factura factUpdate = new Factura(48, LocalDate.of(2023, Month.APRIL, 15), "actualizado", 100);
+        fdao.updateFactura(48, factUpdate);
 
         
     }
